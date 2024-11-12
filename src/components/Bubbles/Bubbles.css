@@ -1,0 +1,42 @@
+.activated,
+.deactivated {
+  width: 200px;
+  height: 150px;
+  gap: 0px;
+  border-radius: 10px;
+  padding: 10px;
+  cursor: pointer;
+
+  box-shadow: rgb(0, 0, 0) 0px 4px 0px 0px;
+
+  transition: all 0.5s ease;
+}
+
+.activated {
+  background-color: #5b7aba;
+}
+
+.deactivated {
+  background-color: #808080;
+}
+
+.activated:hover,
+.deactivated:hover {
+  transform: translateY(-10px);
+  box-shadow: rgb(46, 201, 162) 0px 10px 0px 0px;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin: 0;
+  padding: 0;
+}
+
+#name {
+  color: aliceblue;
+  font-size: 1.5em;
+}
