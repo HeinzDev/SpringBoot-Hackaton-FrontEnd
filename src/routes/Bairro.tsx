@@ -19,7 +19,8 @@ const Bairro = () => {
   });
 
   useEffect(() => {
-    setTimeout(() => handleFetchBairro(), 200);
+    const timeoutId = setTimeout(() => handleFetchBairro(), 200);
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const handleFetchBairro = async () => {

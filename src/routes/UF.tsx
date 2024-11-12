@@ -10,7 +10,7 @@ interface UF {
 }
 
 const UFComponent: React.FC = () => {
-  const [ufs, setUfs] = useState<UF[]>([]); // Armazena as UFs encontradas
+  const [ufs, setUfs] = useState<UF[]>([]);
   const [form, setForm] = useState<UF>({
     codigoUF: 0,
     sigla: '',
@@ -21,54 +21,52 @@ const UFComponent: React.FC = () => {
   const handleFetchUF = async () => {
     try {
       const response = await axios.get('http://localhost:8080/uf/all');
-      setUfs(response.data); // Atualiza a lista de UFs no estado
+      setUfs(response.data);
+      console.log('UPDATE!!!!!!');
     } catch (error) {
       console.error('Erro ao buscar as UFs:', error);
     }
   };
 
   useEffect(() => {
-    setTimeout(() => handleFetchUF(), 200);
-  });
+    const timeoutId = setTimeout(() => handleFetchUF(), 200);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
-  // Função para lidar com a mudança nos campos de entrada do formulário
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
-  // Função para tratar a mudança na checkbox de status
   const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { checked, value } = e.target;
     setForm({
       ...form,
-      status: checked ? parseInt(value) : 0, // Se marcado, define o status como o valor da checkbox, caso contrário 0
+      status: checked ? parseInt(value) : 0,
     });
   };
 
-  // Função para buscar as UFs com base nos parâmetros fornecidos
   const handleConsultUF = async () => {
     const params: Record<string, string | number> = {};
 
-    if (form.sigla) params.sigla = form.sigla; // Adiciona o parâmetro sigla se preenchido
-    if (form.nome) params.nome = form.nome; // Adiciona o parâmetro nome se preenchido
-    if (form.status > 0) params.status = form.status; // Adiciona o parâmetro status se marcado
-    if (form.codigoUF > 0) params.codigoUF = form.codigoUF; // Adiciona o parâmetro codigoUF se preenchido
+    if (form.sigla) params.sigla = form.sigla;
+    if (form.nome) params.nome = form.nome;
+    if (form.status > 0) params.status = form.status;
+    if (form.codigoUF > 0) params.codigoUF = form.codigoUF;
 
     try {
       const response = await axios.get('http://localhost:8080/uf', { params });
       let ufsFound = response.data;
 
-      // Se a resposta for um único objeto, transforme-o em um array com um item
       if (!Array.isArray(ufsFound)) {
         ufsFound = [ufsFound];
       }
 
       if (ufsFound.length > 0) {
-        setUfs(ufsFound); // Atualiza a lista de UFs encontradas
+        setUfs(ufsFound);
       } else {
         alert('UF não encontrada!');
-        setUfs([]); // Limpa a lista caso não encontre
+        setUfs([]);
       }
     } catch (error) {
       console.error('Erro ao consultar UF:', error);
@@ -84,8 +82,8 @@ const UFComponent: React.FC = () => {
         status: form.status,
       });
       alert('UF criada com sucesso!');
-      setUfs([...ufs, response.data]); // Adiciona a nova UF na lista
-      setForm({ codigoUF: 0, sigla: '', nome: '', status: 0 }); // Limpa o formulário
+      setUfs([...ufs, response.data]);
+      setForm({ codigoUF: 0, sigla: '', nome: '', status: 0 });
       handleFetchUF();
     } catch (error) {
       console.error('Erro ao criar UF:', error);
@@ -93,7 +91,6 @@ const UFComponent: React.FC = () => {
     }
   };
 
-  // Função para atualizar uma UF existente
   const handleUpdateUF = async () => {
     if (!form.codigoUF) {
       alert('Informe o código da UF para atualização');
@@ -111,7 +108,7 @@ const UFComponent: React.FC = () => {
       setUfs(
         ufs.map((uf) => (uf.codigoUF === form.codigoUF ? response.data : uf))
       ); // Atualiza a UF na lista
-      setForm({ codigoUF: 0, sigla: '', nome: '', status: 0 }); // Limpa o formulário
+      setForm({ codigoUF: 0, sigla: '', nome: '', status: 0 });
       handleFetchUF();
     } catch (error) {
       console.error('Erro ao atualizar UF:', error);
@@ -119,7 +116,6 @@ const UFComponent: React.FC = () => {
     }
   };
 
-  // Função para excluir uma UF
   const handleDeleteUF = async () => {
     if (!form.codigoUF) {
       alert('Informe o código da UF para exclusão');
@@ -129,8 +125,8 @@ const UFComponent: React.FC = () => {
     try {
       await axios.delete(`http://localhost:8080/uf?code=${form.codigoUF}`);
       alert('UF deletada com sucesso!');
-      setUfs(ufs.filter((uf) => uf.codigoUF !== form.codigoUF)); // Remove a UF da lista
-      setForm({ codigoUF: 0, sigla: '', nome: '', status: 0 }); // Limpa o formulário
+      setUfs(ufs.filter((uf) => uf.codigoUF !== form.codigoUF));
+      setForm({ codigoUF: 0, sigla: '', nome: '', status: 0 });
       handleFetchUF();
     } catch (error) {
       console.error('Erro ao deletar UF:', error);

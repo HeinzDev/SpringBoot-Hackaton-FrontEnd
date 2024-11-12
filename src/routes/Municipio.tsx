@@ -18,10 +18,6 @@ const Municipio: React.FC = () => {
     status: 0,
   });
 
-  useEffect(() => {
-    setTimeout(() => handleFetchMunicipio(), 200);
-  }, []);
-
   const handleFetchMunicipio = async () => {
     try {
       const response = await axios.get('http://localhost:8080/municipio/all');
@@ -30,6 +26,11 @@ const Municipio: React.FC = () => {
       console.error('Erro ao buscar os municípios:', error);
     }
   };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => handleFetchMunicipio(), 200);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
