@@ -1,10 +1,10 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import axios from 'axios'; // Importa o axios
+import axios from 'axios';
 import Bubbles from '../components/Bubbles/Bubbles.tsx';
 
 interface Municipio {
   codigoMunicipio: number;
-  codigoUF: number; // Código da unidade federativa
+  codigoUF: number;
   nome: string;
   status: number;
 }
@@ -51,6 +51,7 @@ const Municipio: React.FC = () => {
     if (form.nome) params.nome = form.nome;
     if (form.status > 0) params.status = form.status;
     if (form.codigoUF > 0) params.codigoUF = form.codigoUF;
+    if (form.codigoMunicipio > 0) params.codigoMunicipio = form.codigoMunicipio;
 
     try {
       const response = await axios.get('http://localhost:8080/municipio', {
@@ -85,30 +86,26 @@ const Municipio: React.FC = () => {
       setForm({ codigoMunicipio: 0, codigoUF: 0, nome: '', status: 0 });
       setTimeout(() => handleFetchMunicipio(), 1000);
     } catch (error) {
-      console.error('Erro ao criar município:', error);
+      console.error('Erro ao criar municipio:', error);
       alert('Erro ao criar município!');
     }
   };
 
-  // Função para atualizar uma município existente
   const handleUpdateMunicipio = async () => {
-    if (!form.codigoUF) {
-      alert('Informe o código da município para atualização');
+    if (!form.codigoMunicipio) {
+      alert('Informe o código do município');
       return;
     }
 
     try {
-      const response = await axios.put('http://localhost:8080/municipio', {
+      await axios.put('http://localhost:8080/municipio', {
+        codigoMunicipio: form.codigoMunicipio,
         codigoUF: form.codigoUF,
         nome: form.nome,
         status: form.status,
       });
       alert('Município atualizado com sucesso!');
-      setMunicipios(
-        municipios.map((municipio) =>
-          municipio.codigoUF === form.codigoUF ? response.data : municipio
-        )
-      );
+
       setForm({ codigoMunicipio: 0, codigoUF: 0, nome: '', status: 0 });
 
       setTimeout(() => handleFetchMunicipio(), 1000);
@@ -119,19 +116,16 @@ const Municipio: React.FC = () => {
   };
 
   const handleDeleteMunicipio = async () => {
-    if (!form.codigoUF) {
+    if (!form.codigoMunicipio) {
       alert('Informe o código da município para exclusão');
       return;
     }
 
     try {
       await axios.delete(
-        `http://localhost:8080/municipio?codigoUF=${form.codigoUF}`
+        `http://localhost:8080/municipio?code=${form.codigoMunicipio}`
       );
       alert('Município deletado com sucesso!');
-      setMunicipios(
-        municipios.filter((municipio) => municipio.codigoUF !== form.codigoUF)
-      );
       setForm({ codigoMunicipio: 0, codigoUF: 0, nome: '', status: 0 });
       handleFetchMunicipio();
     } catch (error) {
@@ -144,18 +138,18 @@ const Municipio: React.FC = () => {
     <div className="relative-container">
       <h2>Municípios</h2>
       <div className="response">
-        {municipios.length > 0 ? (
+        {municipios && municipios.length > 0 ? (
           municipios.map((municipio) => (
             <Bubbles
-              key={municipio.codigoUF}
+              key={municipio.codigoMunicipio}
               name={municipio.nome}
               code={
                 municipio.codigoMunicipio
                   ? municipio.codigoMunicipio.toString()
-                  : 'N/A'
+                  : ''
               }
               description="UF"
-              data={municipio.codigoUF ? municipio.codigoUF.toString() : 'N/A'}
+              data={municipio.codigoUF ? municipio.codigoUF.toString() : ''}
               status={municipio.status}
             />
           ))
@@ -170,6 +164,15 @@ const Municipio: React.FC = () => {
 
       <div className="form-container">
         <div className="form">
+          <label>
+            <b>Código</b>
+          </label>
+          <input
+            type="text"
+            name="codigoMunicipio"
+            value={form.codigoMunicipio ? form.codigoMunicipio.toString() : ''}
+            onChange={handleInputChange}
+          />
           <label>
             <b>Código da UF</b>
           </label>

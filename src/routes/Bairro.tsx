@@ -98,19 +98,13 @@ const Bairro = () => {
     }
 
     try {
-      const response = await axios.put('http://localhost:8080/bairro', {
+      await axios.put('http://localhost:8080/bairro', {
+        codigoBairro: form.codigoBairro,
         codigoMunicipio: form.codigoMunicipio,
         nome: form.nome,
         status: form.status,
       });
       alert('Município atualizado com sucesso!');
-      setBairros(
-        bairros.map((bairro) =>
-          bairro.codigoMunicipio === form.codigoMunicipio
-            ? response.data
-            : bairro
-        )
-      );
       setForm({ codigoBairro: 0, codigoMunicipio: 0, nome: '', status: 0 });
 
       setTimeout(() => handleFetchBairro(), 1000);
@@ -121,21 +115,16 @@ const Bairro = () => {
   };
 
   const handleDeleteBairro = async () => {
-    if (!form.codigoMunicipio) {
+    if (!form.codigoBairro) {
       alert('Informe o código da município para exclusão');
       return;
     }
 
     try {
       await axios.delete(
-        `http://localhost:8080/bairro?codigoMunicipio=${form.codigoMunicipio}`
+        `http://localhost:8080/bairro?code=${form.codigoBairro}`
       );
       alert('Município deletado com sucesso!');
-      setBairros(
-        bairros.filter(
-          (bairro) => bairro.codigoMunicipio !== form.codigoMunicipio
-        )
-      );
       setForm({ codigoBairro: 0, codigoMunicipio: 0, nome: '', status: 0 });
       handleFetchBairro();
     } catch (error) {
@@ -148,7 +137,7 @@ const Bairro = () => {
     <div className="relative-container">
       <h2>Bairros</h2>
       <div className="response">
-        {bairros.length > 0 ? (
+        {bairros && bairros.length > 0 ? (
           bairros.map((bairro) => (
             <Bubbles
               key={bairro.codigoBairro}
@@ -181,7 +170,7 @@ const Bairro = () => {
           </label>
           <input
             type="text"
-            name="codigo"
+            name="codigoBairro"
             value={form.codigoBairro ? form.codigoBairro.toString() : ''}
             onChange={handleInputChange}
           />

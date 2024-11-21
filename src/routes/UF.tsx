@@ -22,7 +22,6 @@ const UFComponent: React.FC = () => {
     try {
       const response = await axios.get('http://localhost:8080/uf/all');
       setUfs(response.data);
-      console.log('UPDATE!!!!!!');
     } catch (error) {
       console.error('Erro ao buscar as UFs:', error);
     }
@@ -30,7 +29,7 @@ const UFComponent: React.FC = () => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => handleFetchUF(), 200);
-    return () => clearTimeout(timeoutId);
+    return () => clearTimeout(timeoutId); //sem isso ele atualiza pra sempre
   }, []);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -73,16 +72,14 @@ const UFComponent: React.FC = () => {
     }
   };
 
-  // Função para criar uma nova UF
   const handleCreateUF = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/uf', {
+      await axios.post('http://localhost:8080/uf', {
         nome: form.nome,
         sigla: form.sigla,
         status: form.status,
       });
       alert('UF criada com sucesso!');
-      setUfs([...ufs, response.data]);
       setForm({ codigoUF: 0, sigla: '', nome: '', status: 0 });
       handleFetchUF();
     } catch (error) {
@@ -98,16 +95,13 @@ const UFComponent: React.FC = () => {
     }
 
     try {
-      const response = await axios.put('http://localhost:8080/uf', {
+      await axios.put('http://localhost:8080/uf', {
         codigoUF: form.codigoUF,
         sigla: form.sigla,
         nome: form.nome,
         status: form.status,
       });
       alert('UF atualizada com sucesso!');
-      setUfs(
-        ufs.map((uf) => (uf.codigoUF === form.codigoUF ? response.data : uf))
-      ); // Atualiza a UF na lista
       setForm({ codigoUF: 0, sigla: '', nome: '', status: 0 });
       handleFetchUF();
     } catch (error) {
@@ -139,16 +133,20 @@ const UFComponent: React.FC = () => {
       <h2>UF</h2>
       <div className="response">
         {ufs.length > 0 ? (
-          ufs.map((uf) => (
-            <Bubbles
-              key={uf.codigoUF}
-              name={uf.nome}
-              code={uf.codigoUF.toString()}
-              description="Sigla"
-              data={uf.sigla}
-              status={uf.status}
-            />
-          ))
+          ufs.map(
+            (uf) =>
+              uf && //sem isso && ele dispara erro
+              uf.codigoUF !== undefined && (
+                <Bubbles
+                  key={uf.codigoUF}
+                  name={uf.nome}
+                  code={uf.codigoUF.toString()}
+                  description="Sigla"
+                  data={uf.sigla}
+                  status={uf.status}
+                />
+              )
+          )
         ) : (
           <p></p>
         )}
