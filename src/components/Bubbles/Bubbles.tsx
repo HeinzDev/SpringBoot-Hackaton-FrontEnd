@@ -2,12 +2,12 @@ import { FC } from 'react';
 import './Bubbles.css';
 
 interface BubbleProps {
-  key: number;
   name: string;
   code: string;
   description: string;
   data: string;
   status: number;
+  onClick: () => void; // Adicionando a propriedade onClick
 }
 
 const Bubbles: FC<BubbleProps> = ({
@@ -16,11 +16,12 @@ const Bubbles: FC<BubbleProps> = ({
   description,
   data,
   status,
+  onClick,
 }) => {
   const backgroundColorClass = status == 2 ? 'deactivated' : 'activated';
 
   return (
-    <div className={backgroundColorClass}>
+    <div className={backgroundColorClass} onClick={onClick}>
       <li>
         <ul id="name">
           <b>{name}</b>

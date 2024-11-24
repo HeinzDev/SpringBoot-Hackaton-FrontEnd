@@ -16,6 +16,9 @@ function App() {
           <Link to="/bairros">
             <button className="main-button">BS</button>
           </Link>
+          <Link to="/pessoas">
+            <button className="main-button">PS</button>
+          </Link>
         </div>
 
         <div className="content-container">

@@ -8,6 +8,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Municipio from './routes/Municipio.tsx';
 import Bairro from './routes/Bairro.tsx';
 import UF from './routes/UF.tsx';
+import Pessoa from './routes/Pessoa.tsx';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: '/bairros',
         element: <Bairro />,
+      },
+      {
+        path: '/pessoas',
+        element: <Pessoa />,
       },
     ],
   },

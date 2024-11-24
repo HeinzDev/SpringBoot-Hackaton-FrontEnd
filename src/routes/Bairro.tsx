@@ -152,6 +152,7 @@ const Bairro = () => {
                   : 'N/A'
               }
               status={bairro.status}
+              onClick={() => {}}
             />
           ))
         ) : (

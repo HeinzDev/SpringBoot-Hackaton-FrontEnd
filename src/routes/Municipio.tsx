@@ -151,6 +151,7 @@ const Municipio: React.FC = () => {
               description="UF"
               data={municipio.codigoUF ? municipio.codigoUF.toString() : ''}
               status={municipio.status}
+              onClick={() => {}}
             />
           ))
         ) : (
