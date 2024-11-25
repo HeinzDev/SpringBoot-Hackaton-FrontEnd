@@ -15,7 +15,7 @@ interface ProfileProps {
 
 interface Usuario {
   codigoPessoa: number;
-  name: string;
+  nome: string;
   sobrenome: string;
   idade: number;
   login: string;
@@ -56,7 +56,7 @@ const Profile: React.FC<ProfileProps> = ({ code, onClose }) => {
               />
               <div className="user-data">
                 <h2>
-                  {user.name} {user.sobrenome}
+                  {user.nome} {user.sobrenome}
                 </h2>
                 <ul>
                   <li>Codigo: {user.codigoPessoa}</li>
@@ -71,16 +71,21 @@ const Profile: React.FC<ProfileProps> = ({ code, onClose }) => {
             <div className="enderecos">
               {enderecos.map((endereco) => (
                 <div key={endereco.codigoEndereco} className="endereco-bubble">
-                  <p>
-                    <strong>Código do Endereço:</strong>{' '}
-                    {endereco.codigoEndereco}
-                  </p>
-                  <p>
-                    <strong>Rua:</strong> {endereco.nomeRua}
-                  </p>
-                  <p>
-                    <strong>Número:</strong> {endereco.numero}
-                  </p>
+                  <div className="house-icon">
+                    <i className="fa-solid fa-house-circle-check"></i>
+                  </div>
+                  <div className="endereco-data">
+                    <p>
+                      <strong>Código do Endereço:</strong>{' '}
+                      {endereco.codigoEndereco}
+                    </p>
+                    <p>
+                      <strong>Rua:</strong> {endereco.nomeRua}
+                    </p>
+                    <p>
+                      <strong>Número:</strong> {endereco.numero}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>

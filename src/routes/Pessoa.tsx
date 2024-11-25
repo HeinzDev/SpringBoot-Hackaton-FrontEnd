@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent, useEffect } from 'react';
 import axios from 'axios';
 import Bubbles from '../components/Bubbles/Bubbles.tsx';
 import Profile from '../components/Profile/Profile.tsx';
+import PessoaForm from '../components/PessoaForm/PessoaForm.tsx';
 
 interface UF {
   codigoPessoa: number;
@@ -21,9 +22,12 @@ const UFComponent: React.FC = () => {
   const [profileVisible, setProfileVisible] = useState<boolean>(false);
   const [selectedCode, setSelectedCode] = useState<number | null>(null);
 
+  const [createFormVisible, setCreateFormVisible] = useState<boolean>(false);
+  // const [editFormvisible, setEditFormVisible] = useState<boolean>(false);
+
   const handleFetchUF = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/pessoa?status=1');
+      const response = await axios.get('http://localhost:8080/pessoa/all');
       setUfs(response.data);
     } catch (error) {
       console.error('Erro ao buscar as UFs:', error);
@@ -51,65 +55,29 @@ const UFComponent: React.FC = () => {
   const handleConsultUF = async () => {
     const params: Record<string, string | number> = {};
 
-    if (form.login) params.sigla = form.login;
+    if (form.login) params.login = form.login;
     if (form.nome) params.nome = form.nome;
     if (form.status > 0) params.status = form.status;
     if (form.codigoPessoa > 0) params.codigoPessoa = form.codigoPessoa;
 
     try {
-      const response = await axios.get('http://localhost:8080/uf', { params });
-      let ufsFound = response.data;
+      const response = await axios.get('http://localhost:8080/pessoa', {
+        params,
+      });
+      let pessoas = response.data;
 
-      if (!Array.isArray(ufsFound)) {
-        ufsFound = [ufsFound];
+      if (!Array.isArray(pessoas)) {
+        pessoas = [pessoas];
       }
 
-      if (ufsFound.length > 0) {
-        setUfs(ufsFound);
+      if (pessoas.length > 0) {
+        setUfs(pessoas);
       } else {
-        alert('UF não encontrada!');
+        alert('Pessoa não encontrada!');
         setUfs([]);
       }
     } catch (error) {
-      console.error('Erro ao consultar UF:', error);
-    }
-  };
-
-  const handleCreateUF = async () => {
-    try {
-      await axios.post('http://localhost:8080/uf', {
-        nome: form.nome,
-        sigla: form.login,
-        status: form.status,
-      });
-      alert('UF criada com sucesso!');
-      setForm({ codigoPessoa: 0, login: '', nome: '', status: 0 });
-      handleFetchUF();
-    } catch (error) {
-      console.error('Erro ao criar UF:', error);
-      alert('Erro ao criar UF!');
-    }
-  };
-
-  const handleUpdateUF = async () => {
-    if (!form.codigoPessoa) {
-      alert('Informe o código da UF para atualização');
-      return;
-    }
-
-    try {
-      await axios.put('http://localhost:8080/uf', {
-        codigoPessoa: form.codigoPessoa,
-        login: form.login,
-        nome: form.nome,
-        status: form.status,
-      });
-      alert('UF atualizada com sucesso!');
-      setForm({ codigoPessoa: 0, login: '', nome: '', status: 0 });
-      handleFetchUF();
-    } catch (error) {
-      console.error('Erro ao atualizar UF:', error);
-      alert('Erro ao atualizar UF!');
+      console.error('Erro ao consultar Pessoa:', error);
     }
   };
 
@@ -121,6 +89,10 @@ const UFComponent: React.FC = () => {
   const handleCloseProfile = () => {
     setProfileVisible(false);
     setSelectedCode(null);
+  };
+
+  const handleCloseForm = () => {
+    setCreateFormVisible(false);
   };
 
   return (
@@ -151,10 +123,22 @@ const UFComponent: React.FC = () => {
       <button className="refresh" onClick={handleFetchUF}>
         <i className="fa-solid fa-arrows-rotate"></i>
       </button>
+      <button
+        className="create-pessoa"
+        onClick={() => setCreateFormVisible(true)}
+      >
+        <i className="fa-solid fa-plus"></i>
+      </button>
 
       {profileVisible && selectedCode && (
         <div className="profile-container">
           <Profile code={selectedCode} onClose={handleCloseProfile} />
+        </div>
+      )}
+
+      {createFormVisible && (
+        <div className="create-pessoa-form">
+          <PessoaForm onClose={handleCloseForm} />
         </div>
       )}
 
@@ -176,10 +160,10 @@ const UFComponent: React.FC = () => {
             value={form.nome}
             onChange={handleInputChange}
           />
-          <label htmlFor="sigla">Sigla</label>
+          <label htmlFor="login">login</label>
           <input
             type="text"
-            name="sigla"
+            name="login"
             value={form.login}
             onChange={handleInputChange}
           />
@@ -204,15 +188,9 @@ const UFComponent: React.FC = () => {
           </div>
         </div>
 
-        <div className="crud-buttons">
+        <div className="crud-buttons-pessoa">
           <button onClick={handleConsultUF}>
             <i className="fa-solid fa-magnifying-glass"></i>
-          </button>
-          <button onClick={handleCreateUF}>
-            <i className="fa-solid fa-plus"></i>
-          </button>
-          <button onClick={handleUpdateUF}>
-            <i className="fa-solid fa-pencil"></i>
           </button>
         </div>
       </div>

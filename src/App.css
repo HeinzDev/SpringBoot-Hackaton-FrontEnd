@@ -75,6 +75,31 @@ body {
   border-radius: 40%;
 }
 
+.refresh {
+  position: absolute;
+  font-size: 20px;
+  top: 0;
+  right: 0;
+  aspect-ratio: 1/1;
+  border-radius: 40%;
+}
+.create-pessoa {
+  position: absolute;
+  font-size: 20px;
+  top: 80px;
+  right: 0;
+  aspect-ratio: 1/1;
+  border-radius: 40%;
+}
+.edit-pessoa {
+  position: absolute;
+  font-size: 20px;
+  top: 160px;
+  right: 0;
+  aspect-ratio: 1/1;
+  border-radius: 40%;
+}
+
 .form-container {
   position: absolute;
   bottom: 70px;
@@ -102,13 +127,13 @@ body {
   gap: 1em;
 }
 
-.crud-buttons {
+.crud-buttons-pessoa {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: end;
 }
 
-.crud-buttons button {
+.crud-buttons-pessoa button {
   aspect-ratio: 1/1;
   border-radius: 10px;
   font-size: 18px;
